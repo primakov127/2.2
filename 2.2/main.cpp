@@ -3,6 +3,7 @@
 #include <Windows.h>
 #define str_len 30
 #define size 30
+#define spec_size 10
 int choice;
 using namespace std;
 
@@ -13,11 +14,17 @@ void change(); // Функция для изменения данных
 void out(); // Функция для вывода данных
 void search(); // Функция для поиска данных по названи ВУЗа
 
+struct spec
+{
+	char name[str_len];
+};
+
 struct University
 {
 	char name[str_len];
 	char address[str_len];
-	char specialty[str_len];
+	int number;
+	spec specialty[spec_size];
 	int lastCompetition;
 	int cost;
 };
@@ -71,8 +78,13 @@ void enter_new()
 		cin >> list_of_university[current_size].name;
 		cout << endl << "Адрес: ";
 		cin >> list_of_university[current_size].address;
-		cout << endl << "Специальности: ";
-		cin >> list_of_university[current_size].specialty;
+		cout << endl << "Введите кол-во специальностей( 10 - максимальное кол-во специальностей ): ";
+		cin >> list_of_university[current_size].number;
+		for (int i = 0; i < list_of_university[current_size].number; i++)
+		{
+			cout << endl << "Специальность " << i + 1 << ": ";
+			cin >> list_of_university[current_size].specialty[i].name;
+		}
 		cout << endl << "Конкурс 2018: ";
 		do
 		{
@@ -121,49 +133,60 @@ void del()
 
 void change()
 {
-	int n, per;
-	cout << "\nВведите номер строки" << endl;
-	cin >> n;
-	do
+	if (current_size != 0)
 	{
-		cout << "Введите: " << endl;
-		cout << "1-для изменения Наименования ВУЗа" << endl;
-		cout << "2-для изменения Адреса" << endl;
-		cout << "3-для изменения Специальностей" << endl;
-		cout << "4-для изменения Конкурса 2018" << endl;
-		cout << "5-для изменения Стоимсоти обучения" << endl;
-		cout << "6-конец\n";
-		cin >> per;
-		switch (per)
+		int n, per;
+		cout << "\nВведите номер строки" << endl;
+		cin >> n;
+		do
 		{
-		case 1: cout << "Новое наименование ВУЗа: ";
-			cin >> list_of_university[n - 1].name;   break;
-		case 2: cout << "Новый Адрес: ";
-			cin >> list_of_university[n - 1].address; break;
-		case 3: cout << "Новые Специальности: ";
-			cin >> list_of_university[n - 1].specialty; break;
-		case 4: cout << "Новый Конкурс: ";
-			do
+			cout << "Введите: " << endl;
+			cout << "1-для изменения Наименования ВУЗа" << endl;
+			cout << "2-для изменения Адреса" << endl;
+			cout << "3-для изменения Специальностей" << endl;
+			cout << "4-для изменения Конкурса 2018" << endl;
+			cout << "5-для изменения Стоимсоти обучения" << endl;
+			cout << "6-конец\n";
+			cin >> per;
+			switch (per)
 			{
-				cin >> check;
-				if (isdigit(check[0]))													//	Проверка вводимых
-					list_of_university[n - 1].lastCompetition = atoi(check);			//		данных
-				else
-					cout << "Введённые данные не корректны! Пропробуйте ещё раз: ";
-			} while (!isdigit(check[0]));
-			break;
-		case 5: cout << "Новую Стоимость обучения: ";
-			do
-			{
-				cin >> check;
-				if (isdigit(check[0]))													//	Проверка вводимых
-					list_of_university[n - 1].cost = atoi(check);						//		данных
-				else
-					cout << "Введённые данные не корректны! Пропробуйте ещё раз: ";
-			} while (!isdigit(check[0]));
-			break;
-		}
-	} while (per != 6);
+			case 1: cout << "Новое наименование ВУЗа: ";
+				cin >> list_of_university[n - 1].name;   break;
+			case 2: cout << "Новый Адрес: ";
+				cin >> list_of_university[n - 1].address; break;
+			case 3:
+				for (int i = 0; i < list_of_university[n - 1].number; i++)
+				{
+					cout << "Новая Специальность " << i + 1 << ": ";
+					cin >> list_of_university[n - 1].specialty[i].name;
+				}
+				break;
+			case 4: cout << "Новый Конкурс: ";
+				do
+				{
+					cin >> check;
+					if (isdigit(check[0]))													//	Проверка вводимых
+						list_of_university[n - 1].lastCompetition = atoi(check);			//		данных
+					else
+						cout << "Введённые данные не корректны! Пропробуйте ещё раз: ";
+				} while (!isdigit(check[0]));
+				break;
+			case 5: cout << "Новую Стоимость обучения: ";
+				do
+				{
+					cin >> check;
+					if (isdigit(check[0]))													//	Проверка вводимых
+						list_of_university[n - 1].cost = atoi(check);						//		данных
+					else
+						cout << "Введённые данные не корректны! Пропробуйте ещё раз: ";
+				} while (!isdigit(check[0]));
+				break;
+			}
+		} while (per != 6);
+	}
+	else
+		cout << "Данных нет!" << endl;
+	system("pause");
 }
 
 void out()
@@ -180,8 +203,11 @@ void out()
 		cout << list_of_university[n - 1].name << endl;
 		cout << "Адрес: ";
 		cout << list_of_university[n - 1].address << endl;
-		cout << "Специальности: ";
-		cout << list_of_university[n - 1].specialty << endl;
+		cout << "Специальности: " << endl;
+		for (int i = 0; i < list_of_university[n - 1].number; i++)
+		{
+			cout << "Специальность " << i + 1 << ": " << list_of_university[n - 1].specialty[i].name << endl;
+		}
 		cout << "Конкурс 2018: ";
 		cout << list_of_university[n - 1].lastCompetition << endl;
 		cout << "Стоимость обучения: ";
@@ -195,8 +221,11 @@ void out()
 			cout << list_of_university[i].name << endl;
 			cout << "Адрес: ";
 			cout << list_of_university[i].address << endl;
-			cout << "Специальности: ";
-			cout << list_of_university[i].specialty << endl;
+			cout << "Специальности: " << endl;
+			for (int j = 0; j < list_of_university[i].number; j++)
+			{
+				cout << "Специальность " << j + 1 << ": " << list_of_university[i].specialty[j].name << endl;
+			}
 			cout << "Конкурс 2018: ";
 			cout << list_of_university[i].lastCompetition << endl;
 			cout << "Стоимость обучения: ";
